@@ -2,105 +2,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KARAOKE PARTY!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SING PARTY!</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --neon-yellow: #f0ff00;
-            --hot-pink: #ff007f;
-            --electric-blue: #00e5ff;
-            --game-scale: 22vh; 
+            /* Updated Theme Colors for Singing/Karaoke */
+            --gold: #ffcc00;
+            --royal-purple: #9d00ff;
+            --deep-violet: #4e008a;
+            --game-scale: 28vh; 
         }
 
-        body, html {
+        body {
             background: #000;
             color: #fff;
             font-family: 'Fredoka', sans-serif;
-            margin: 0; padding: 0;
-            height: 100%; width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            touch-action: manipulation;
+            touch-action: manipulation; /* Prevents iPad zoom on double tap */
         }
 
-        /* iPad Fixed Background */
         #bg-video-main {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            z-index: -1; 
+            z-index: -2;
         }
 
-        /* Banner Spacer (35% gap for your Karaoke Title) */
         .banner-space {
-            height: 35vh;
+            height: 30vh;
             width: 100%;
-            pointer-events: none;
         }
 
         .game-area-bottom {
-            height: 65vh;
+            height: 70vh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             box-sizing: border-box;
-            z-index: 1;
         }
 
         #game-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 1.5vh;
-            margin-bottom: 3vh;
+            z-index: 1;
+            margin-bottom: 2vh;
         }
 
         .box {
             width: var(--game-scale); 
             height: var(--game-scale);
-            border: 0.6vh solid var(--electric-blue);
-            border-radius: 3vh;
-            background: rgba(0,0,0,0.4) url('box-design.png') center/cover no-repeat;
-            box-shadow: 0 0 2vh rgba(0, 229, 255, 0.4);
-            transition: transform 0.2s;
+            border: 0.6vh solid rgba(157, 0, 255, 0.5);
+            border-radius: 4vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('box-design.png');
+            background-color: rgba(0,0,0,0.4);
+            box-shadow: 0 0 2vh rgba(157, 0, 255, 0.4);
+            animation: borderPulse 3s infinite alternate;
+        }
+
+        @keyframes borderPulse {
+            from { border-color: var(--royal-purple); box-shadow: 0 0 1vh var(--royal-purple); }
+            to { border-color: var(--gold); box-shadow: 0 0 3vh var(--gold); }
         }
 
         .box.shimmer {
-            border-color: var(--neon-yellow) !important;
-            box-shadow: 0 0 8vh var(--neon-yellow) !important;
+            border-color: var(--gold) !important;
+            box-shadow: 0 0 10vh var(--gold) !important;
             transform: scale(1.1);
-            filter: brightness(1.5);
+            filter: brightness(1.8);
             z-index: 10;
         }
 
         #start-btn {
-            padding: 2.5vh 12vw;
-            font-size: 5vh;
+            padding: 2vh 10vw;
+            font-size: 6vh;
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
             cursor: pointer;
-            background: linear-gradient(45deg, var(--hot-pink), #ff0044);
+            background: linear-gradient(45deg, var(--royal-purple), var(--gold));
             color: white;
-            border: 0.5vh solid white;
+            border: none;
             border-radius: 100px;
-            box-shadow: 0 0 4vh var(--hot-pink);
-            -webkit-appearance: none;
+            box-shadow: 0 0 5vh var(--royal-purple);
+            z-index: 10;
         }
 
-        /* Overlays */
         #countdown-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.8);
             z-index: 500;
-            justify-content: center; align-items: center;
-            font-size: 25vh; color: var(--neon-yellow);
-            text-shadow: 0 0 50px var(--neon-yellow);
+            justify-content: center;
+            align-items: center;
+            font-size: 25vh;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: 0 0 50px var(--gold);
         }
 
         #video-overlay {
@@ -113,10 +124,11 @@
 
         #video-blur-bg {
             position: absolute;
-            width: 110%; height: 110%;
-            top: -5%; left: -5%;
+            width: 120%; height: 120%;
+            top: -10%; left: -10%;
             object-fit: cover;
             filter: blur(40px) brightness(0.4);
+            z-index: 601;
         }
 
         #game-video {
@@ -127,21 +139,32 @@
         }
 
         .controls-top {
-            position: fixed; top: 15px; left: 15px;
-            display: flex; gap: 10px; z-index: 200;
-            background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 50px;
-            border: 1px solid var(--electric-blue); backdrop-filter: blur(10px);
+            position: fixed; top: 20px; left: 20px;
+            display: flex; gap: 15px; z-index: 200;
+            background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 50px;
+            border: 1px solid var(--gold); backdrop-filter: blur(10px);
+        }
+
+        #fullscreen-btn {
+            position: fixed; top: 20px; right: 20px;
+            width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 200; backdrop-filter: blur(10px); border: 2px solid var(--gold);
         }
     </style>
 </head>
 <body>
 
-    <video id="bg-video-main" autoplay muted loop playsinline webkit-playsinline>
+    <video id="bg-video-main" autoplay muted loop playsinline>
         <source src="background-loop.mp4" type="video/mp4">
     </video>
 
     <div class="controls-top">
-        <input type="range" id="size-slider" min="12" max="28" value="22" oninput="adjustSize(this.value)">
+        <input type="range" id="size-slider" min="15" max="32" value="28" oninput="adjustSize(this.value)">
+    </div>
+
+    <div id="fullscreen-btn" onclick="toggleFullScreen()">
+        <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
     </div>
 
     <div class="banner-space"></div>
@@ -159,21 +182,21 @@
             <div class="box" id="box-8"></div>
             <div class="box" id="box-9"></div>
         </div>
-        <button id="start-btn" onclick="initiateGame()">SING!</button>
+        <button id="start-btn" onclick="runSelectionCycle()">SING!</button>
     </div>
 
     <div id="countdown-overlay">READY?</div>
 
     <div id="video-overlay">
-        <video id="video-blur-bg" muted playsinline webkit-playsinline></video>
-        <video id="game-video" playsinline webkit-playsinline></video>
+        <video id="video-blur-bg" muted playsinline></video>
+        <video id="game-video" playsinline></video>
     </div>
 
-    <audio id="sfx-shimmer" src="shimmer.mp3" loop preload="auto"></audio>
-    <audio id="sfx-stop" src="reveal.mp3" preload="auto"></audio>
+    <audio id="sfx-shimmer" src="shimmer.mp3" loop></audio>
+    <audio id="sfx-stop" src="reveal.mp3"></audio>
 
     <script>
-        // Updated song list to match your files
+        // Updated to your 5 song files
         const songVideos = ["song1.mp4", "song2.mp4", "song3.mp4", "song4.mp4", "song5.mp4"];
         const goodJobVideo = "good-job.mp4";
         
@@ -185,85 +208,86 @@
         const startBtn = document.getElementById('start-btn');
         const sfxShimmer = document.getElementById('sfx-shimmer');
         const sfxStop = document.getElementById('sfx-stop');
-        const bgVideo = document.getElementById('bg-video-main');
 
         function adjustSize(val) { document.documentElement.style.setProperty('--game-scale', val + 'vh'); }
 
-        function initiateGame() {
-            // Unblock and force play background
-            sfxShimmer.play().then(() => sfxShimmer.pause());
-            sfxStop.play().then(() => sfxStop.pause());
-            videoPlayer.play().then(() => videoPlayer.pause());
-            if (bgVideo.paused) bgVideo.play();
-
-            runSelectionCycle();
+        function toggleFullScreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+            // Support for iPad/Safari and standard browsers
+            const request = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+            const cancel = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
+            
+            if (!doc.fullscreenElement && !doc.webkitFullscreenElement) { 
+                if (request) request.call(docEl); 
+            } else { 
+                if (cancel) cancel.call(doc); 
+            }
         }
 
         function runSelectionCycle() {
             startBtn.style.visibility = 'hidden';
             let count = 0;
             let duration = 15 + Math.floor(Math.random() * 10);
-            
-            sfxShimmer.currentTime = 0;
             sfxShimmer.play();
-
+            
             const interval = setInterval(() => {
                 boxes.forEach(b => b.classList.remove('shimmer'));
                 boxes[count % 10].classList.add('shimmer');
                 count++;
-                
                 if (count > duration) {
                     clearInterval(interval);
                     sfxShimmer.pause();
-                    sfxStop.play();
-                    // Choose from the 5 available songs
-                    setTimeout(() => startCountdown(count % 5), 1000);
+                    sfxShimmer.currentTime = 0;
+                    startCountdown(count % 10);
                 }
             }, 130);
         }
 
-        function startCountdown(videoIndex) {
+        function startCountdown(boxIndex) {
+            sfxStop.play();
             countOverlay.style.display = 'flex';
-            const steps = ["READY?", "3", "2", "1", "GO!"];
-            let i = 0;
-
+            let timer = 3;
+            countOverlay.innerText = "READY?";
+            
             const countInterval = setInterval(() => {
-                if (i < steps.length) {
-                    countOverlay.innerText = steps[i];
-                    i++;
+                if (timer > 0) {
+                    countOverlay.innerText = timer;
+                    timer--;
+                } else if (timer === 0) {
+                    countOverlay.innerText = "GO!";
+                    timer--;
                 } else {
                     clearInterval(countInterval);
                     countOverlay.style.display = 'none';
-                    playSequence(videoIndex);
+                    // We use % 5 because we have 10 boxes but only 5 song files
+                    playSequence(boxIndex % 5);
                 }
-            }, 850);
+            }, 800);
         }
 
         function playSequence(index) {
             overlay.style.display = 'block';
-            const src = songVideos[index];
-            videoPlayer.src = src;
-            blurPlayer.src = src;
+            startVideo(songVideos[index]);
             
-            videoPlayer.load();
-            blurPlayer.load();
-            
-            videoPlayer.play();
-            blurPlayer.play();
-
             videoPlayer.onended = () => {
                 if(videoPlayer.getAttribute('src') !== goodJobVideo) {
-                    videoPlayer.src = goodJobVideo;
-                    blurPlayer.src = goodJobVideo;
-                    videoPlayer.load();
-                    videoPlayer.play();
-                    blurPlayer.play();
+                    startVideo(goodJobVideo);
                 } else {
                     overlay.style.display = 'none';
                     startBtn.style.visibility = 'visible';
                     boxes.forEach(b => b.classList.remove('shimmer'));
+                    blurPlayer.pause();
                 }
             };
+        }
+
+        function startVideo(src) {
+            videoPlayer.src = src;
+            blurPlayer.src = src;
+            videoPlayer.load(); // Forces reload for mobile/iPad
+            videoPlayer.play();
+            blurPlayer.play();
         }
     </script>
 </body>
