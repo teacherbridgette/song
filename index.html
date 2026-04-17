@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <title>SING PARTY!</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap" rel="stylesheet">
     
@@ -13,121 +12,51 @@
         :root {
             --gold: #ffcc00;
             --royal-purple: #9d00ff;
-            --deep-glow: rgba(157, 0, 255, 0.3);
             --game-scale: 28vh; 
         }
-
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Fredoka', sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            overscroll-behavior: none; 
+            background: #000; color: #fff; font-family: 'Fredoka', sans-serif;
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            display: flex; flex-direction: column; overflow: hidden;
             touch-action: manipulation;
         }
-
         #bg-video-main {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: -2;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: -2;
         }
-
-        .banner-space { height: 30vh; width: 100%; }
-
+        .banner-space { height: 30vh; }
         .game-area-bottom {
-            height: 70vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            height: 70vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
         }
-
-        #game-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2vh;
-            z-index: 1;
-        }
-
-        /* NEW BOX DESIGN: No PNG required */
+        #game-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2vh; }
         .box {
-            width: var(--game-scale); 
-            height: var(--game-scale);
-            border: 0.5vh solid var(--royal-purple);
-            border-radius: 4vh;
-            /* Glass effect */
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
+            width: var(--game-scale); height: var(--game-scale);
+            border: 0.5vh solid var(--royal-purple); border-radius: 4vh;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 var(--deep-glow);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
-
-        /* Adds a subtle "mic" icon or sparkle effect inside without a file */
-        .box::after {
-            content: '🎤';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8vh;
-            opacity: 0.2;
-        }
-
         .box.shimmer {
             border-color: var(--gold) !important;
             box-shadow: 0 0 12vh var(--gold) !important;
-            transform: scale(1.1);
-            background: rgba(255, 204, 0, 0.2);
-            z-index: 10;
+            transform: scale(1.1); z-index: 10;
         }
-
         #start-btn {
-            margin-top: 4vh;
-            padding: 2.5vh 12vw;
-            font-size: 6vh;
-            font-weight: 700;
-            cursor: pointer;
+            margin-top: 4vh; padding: 2.5vh 12vw; font-size: 6vh;
+            font-weight: 700; cursor: pointer; color: white; border: none;
             background: linear-gradient(45deg, var(--royal-purple), var(--gold));
-            color: white;
-            border: none;
-            border-radius: 100px;
-            box-shadow: 0 0 4vh var(--royal-purple);
-            z-index: 10;
-            text-transform: uppercase;
+            border-radius: 100px; box-shadow: 0 0 4vh var(--royal-purple);
         }
-
         #video-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: black;
-            z-index: 600;
+            display: none; position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%; background: black; z-index: 600;
         }
-
-        #game-video {
-            width: 100%; height: 100%;
-            object-fit: contain;
-        }
-
+        #game-video { width: 100%; height: 100%; object-fit: contain; }
         #countdown-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 700;
-            justify-content: center; align-items: center;
-            font-size: 30vh; color: var(--gold);
-            font-weight: bold;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
+            z-index: 700; justify-content: center; align-items: center;
+            font-size: 30vh; color: var(--gold); font-weight: bold;
         }
     </style>
 </head>
@@ -141,8 +70,8 @@
 
     <div class="game-area-bottom">
         <div id="game-grid">
-            <div class="box" id="box-0"></div><div class="box" id="box-1"></div><div class="box" id="box-2"></div><div class="box" id="box-3"></div><div class="box" id="box-4"></div>
-            <div class="box" id="box-5"></div><div class="box" id="box-6"></div><div class="box" id="box-7"></div><div class="box" id="box-8"></div><div class="box" id="box-9"></div>
+            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
+            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
         </div>
         <button id="start-btn" onclick="goFullAndStart()">SING!</button>
     </div>
@@ -153,31 +82,35 @@
         <video id="game-video" playsinline></video>
     </div>
 
+    <video id="preloader" style="display:none;" muted playsinline src="good-job.mp4"></video>
+
     <audio id="sfx-shimmer" src="shimmer.mp3" loop></audio>
     <audio id="sfx-stop" src="reveal.mp3"></audio>
 
     <script>
         const songVideos = ["song1.mp4", "song2.mp4", "song3.mp4", "song4.mp4", "song5.mp4"];
-        const goodJobVideo = "good-job.mp4";
+        const goodJobFile = "good-job.mp4";
         const videoPlayer = document.getElementById('game-video');
+        const overlay = document.getElementById('video-overlay');
+        const startBtn = document.getElementById('start-btn');
 
-        // This function handles the iPad specific fullscreen request
         function goFullAndStart() {
+            // iPad Fullscreen
             const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen(); // Safari/iPad
-            }
+            if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+            else if (elem.requestFullscreen) elem.requestFullscreen();
+            
+            // Force load the "Good Job" video immediately so it's in memory
+            document.getElementById('preloader').load();
+            
             runSelectionCycle();
         }
 
         function runSelectionCycle() {
-            document.getElementById('start-btn').style.visibility = 'hidden';
+            startBtn.style.visibility = 'hidden';
             document.getElementById('sfx-shimmer').play();
-            
             let count = 0;
-            let duration = 20 + Math.floor(Math.random() * 10);
+            let duration = 18; 
             const boxes = document.querySelectorAll('.box');
 
             const interval = setInterval(() => {
@@ -198,8 +131,11 @@
             const countOverlay = document.getElementById('countdown-overlay');
             countOverlay.style.display = 'flex';
             let timer = 3;
-            countOverlay.innerText = "READY?";
             
+            // Prime the selected song while counting down
+            videoPlayer.src = songVideos[boxIndex % 5];
+            videoPlayer.load();
+
             const countInterval = setInterval(() => {
                 if (timer > 0) {
                     countOverlay.innerText = timer;
@@ -210,30 +146,33 @@
                 } else {
                     clearInterval(countInterval);
                     countOverlay.style.display = 'none';
-                    playSequence(boxIndex % 5);
+                    playMainVideo();
                 }
             }, 800);
         }
 
-        function playSequence(index) {
-            const overlay = document.getElementById('video-overlay');
+        function playMainVideo() {
             overlay.style.display = 'block';
-            
-            videoPlayer.src = songVideos[index];
-            videoPlayer.load();
             videoPlayer.play();
 
-            videoPlayer.onended = () => {
-                if(!videoPlayer.src.includes(goodJobVideo)) {
-                    videoPlayer.src = goodJobVideo;
-                    videoPlayer.load();
-                    videoPlayer.play();
-                } else {
+            // Clear any old listeners
+            videoPlayer.onended = null;
+
+            // When song ends, switch to Good Job instantly
+            videoPlayer.addEventListener('ended', function switchToGoodJob() {
+                videoPlayer.src = goodJobFile;
+                videoPlayer.load();
+                videoPlayer.play();
+                
+                // When Good Job ends, reset the game
+                videoPlayer.removeEventListener('ended', switchToGoodJob);
+                videoPlayer.addEventListener('ended', function resetGame() {
                     overlay.style.display = 'none';
-                    document.getElementById('start-btn').style.visibility = 'visible';
+                    startBtn.style.visibility = 'visible';
                     document.querySelectorAll('.box').forEach(b => b.classList.remove('shimmer'));
-                }
-            };
+                    videoPlayer.removeEventListener('ended', resetGame);
+                });
+            });
         }
     </script>
 </body>
