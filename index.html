@@ -12,7 +12,7 @@
         :root {
             --gold: #ffcc00;
             --royal-purple: #9d00ff;
-            --game-scale: 28vh; 
+            --game-scale: 35vh; /* Slightly larger boxes since there are only 5 */
         }
 
         body {
@@ -36,14 +36,14 @@
             z-index: -2;
         }
 
-        /* Fullscreen Widget in corner */
+        /* Fullscreen Toggle Widget */
         #fullscreen-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid var(--gold);
             border-radius: 50%;
             display: flex;
@@ -53,10 +53,10 @@
             backdrop-filter: blur(10px);
         }
 
-        .banner-space { height: 30vh; }
+        .banner-space { height: 35vh; }
 
         .game-area-bottom {
-            height: 70vh;
+            height: 65vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -64,37 +64,37 @@
         }
 
         #game-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1.5vh;
+            display: flex;
+            justify-content: center;
+            gap: 3vh;
             z-index: 1;
+            width: 90%;
         }
 
-        /* RESTORED: Box using your PNG */
         .box {
             width: var(--game-scale); 
             height: var(--game-scale);
             border: 0.6vh solid var(--royal-purple);
-            border-radius: 4vh;
+            border-radius: 5vh;
             background-image: url('box-design.png');
             background-size: cover;
             background-position: center;
             background-color: rgba(0,0,0,0.4);
-            box-shadow: 0 0 2vh rgba(157, 0, 255, 0.4);
-            transition: transform 0.2s;
+            box-shadow: 0 0 3vh rgba(157, 0, 255, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .box.shimmer {
             border-color: var(--gold) !important;
-            box-shadow: 0 0 10vh var(--gold) !important;
-            transform: scale(1.1);
+            box-shadow: 0 0 12vh var(--gold) !important;
+            transform: scale(1.15);
             z-index: 10;
         }
 
         #start-btn {
-            margin-top: 3vh;
-            padding: 2vh 10vw;
-            font-size: 6vh;
+            margin-top: 5vh;
+            padding: 2.5vh 12vw;
+            font-size: 7vh;
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
             cursor: pointer;
@@ -123,11 +123,11 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 3000;
             justify-content: center;
             align-items: center;
-            font-size: 25vh;
+            font-size: 30vh;
             color: var(--gold);
             font-weight: bold;
         }
@@ -140,15 +140,18 @@
     </video>
 
     <div id="fullscreen-btn" onclick="toggleFullScreen()">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
     </div>
 
     <div class="banner-space"></div>
 
     <div class="game-area-bottom">
         <div id="game-grid">
-            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
-            <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
+            <div class="box" id="box-0"></div>
+            <div class="box" id="box-1"></div>
+            <div class="box" id="box-2"></div>
+            <div class="box" id="box-3"></div>
+            <div class="box" id="box-4"></div>
         </div>
         <button id="start-btn" onclick="unlockAndStart()">SING!</button>
     </div>
@@ -169,27 +172,25 @@
         const videoPlayer = document.getElementById('game-video');
         const overlay = document.getElementById('video-overlay');
         const startBtn = document.getElementById('start-btn');
+        const boxes = document.querySelectorAll('.box');
 
         function toggleFullScreen() {
-            const doc = window.document;
-            const docEl = doc.documentElement;
+            const docEl = document.documentElement;
             const request = docEl.webkitRequestFullscreen || docEl.requestFullscreen;
-            if (!doc.webkitFullscreenElement && !doc.fullscreenElement) {
-                request.call(docEl);
-                // Pre-warm the video player on click
-                videoPlayer.play().then(() => videoPlayer.pause());
-            }
+            if (request) request.call(docEl);
+            // Pre-warm audio context
+            videoPlayer.play().then(() => videoPlayer.pause());
         }
 
         function unlockAndStart() {
-            // Fullscreen check for iPad
+            // Force Fullscreen on iPad
             if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
             
-            // Critical: "Unlock" video player immediately on tap
+            // iPad sound unlock
             videoPlayer.play().then(() => {
                 videoPlayer.pause();
                 videoPlayer.muted = false;
-            }).catch(e => console.log("Unlock failed", e));
+            }).catch(e => console.log("Unlock error", e));
 
             runSelectionCycle();
         }
@@ -199,20 +200,19 @@
             document.getElementById('sfx-shimmer').play();
             
             let count = 0;
-            let totalSteps = 20;
-            const boxes = document.querySelectorAll('.box');
+            let totalSteps = 15 + Math.floor(Math.random() * 10);
 
             const interval = setInterval(() => {
                 boxes.forEach(b => b.classList.remove('shimmer'));
-                boxes[count % 10].classList.add('shimmer');
+                boxes[count % 5].classList.add('shimmer');
                 count++;
                 if (count > totalSteps) {
                     clearInterval(interval);
                     document.getElementById('sfx-shimmer').pause();
                     document.getElementById('sfx-shimmer').currentTime = 0;
-                    startCountdown(count % 10);
+                    startCountdown(count % 5);
                 }
-            }, 120);
+            }, 130);
         }
 
         function startCountdown(boxIndex) {
@@ -221,8 +221,8 @@
             countOverlay.style.display = 'flex';
             let timer = 3;
             
-            // Map 10 boxes to 5 songs
-            videoPlayer.src = songVideos[boxIndex % 5];
+            // Link box directly to song
+            videoPlayer.src = songVideos[boxIndex];
             videoPlayer.load();
 
             const countInterval = setInterval(() => {
@@ -236,15 +236,13 @@
                     clearInterval(countInterval);
                     countOverlay.style.display = 'none';
                     overlay.style.display = 'block';
-                    
-                    // Plays FULL song. No timers will cut this.
-                    videoPlayer.play();
+                    videoPlayer.play(); // Plays the FULL song
                 }
             }, 800);
         }
 
-        // Handle full playback and transition
-        videoPlayer.addEventListener('ended', function handleEnd() {
+        // Seamless transition logic
+        videoPlayer.addEventListener('ended', function() {
             if (!videoPlayer.src.includes(goodJobVideo)) {
                 videoPlayer.src = goodJobVideo;
                 videoPlayer.load();
@@ -252,7 +250,7 @@
             } else {
                 overlay.style.display = 'none';
                 startBtn.style.visibility = 'visible';
-                document.querySelectorAll('.box').forEach(b => b.classList.remove('shimmer'));
+                boxes.forEach(b => b.classList.remove('shimmer'));
             }
         });
     </script>
