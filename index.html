@@ -12,63 +12,124 @@
         :root {
             --gold: #ffcc00;
             --royal-purple: #9d00ff;
-            --game-scale: 26vh; 
+            --game-scale: 28vh; 
         }
+
         body {
-            background: #000; color: #fff; font-family: 'Fredoka', sans-serif;
-            margin: 0; padding: 0; height: 100vh; width: 100vw;
-            display: flex; flex-direction: column; overflow: hidden;
+            background: #000;
+            color: #fff;
+            font-family: 'Fredoka', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             touch-action: manipulation;
         }
+
         #bg-video-main {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -2;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
         }
-        .banner-space { height: 32vh; }
+
+        /* Fullscreen Widget in corner */
+        #fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .banner-space { height: 30vh; }
+
         .game-area-bottom {
-            height: 68vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        #game-grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 2vh; 
-            padding: 2vh;
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5vh;
+            z-index: 1;
         }
-        /* New Box Design: No PNG needed, high-end iPad look */
+
+        /* RESTORED: Box using your PNG */
         .box {
-            width: var(--game-scale); height: var(--game-scale);
-            border: 0.6vh solid var(--royal-purple); border-radius: 4vh;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            width: var(--game-scale); 
+            height: var(--game-scale);
+            border: 0.6vh solid var(--royal-purple);
+            border-radius: 4vh;
+            background-image: url('box-design.png');
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(0,0,0,0.4);
             box-shadow: 0 0 2vh rgba(157, 0, 255, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 8vh;
+            transition: transform 0.2s;
         }
-        .box::after { content: '🎤'; opacity: 0.3; }
 
         .box.shimmer {
             border-color: var(--gold) !important;
             box-shadow: 0 0 10vh var(--gold) !important;
-            transform: scale(1.1); z-index: 10;
-            background: rgba(255, 204, 0, 0.2);
+            transform: scale(1.1);
+            z-index: 10;
         }
+
         #start-btn {
-            margin-top: 3vh; padding: 2vh 10vw; font-size: 6vh;
-            font-weight: 700; cursor: pointer; color: white; border: none;
+            margin-top: 3vh;
+            padding: 2vh 10vw;
+            font-size: 6vh;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
             background: linear-gradient(45deg, var(--royal-purple), var(--gold));
-            border-radius: 100px; box-shadow: 0 0 4vh var(--royal-purple);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            box-shadow: 0 0 5vh var(--royal-purple);
+            z-index: 10;
         }
+
         #video-overlay {
-            display: none; position: fixed; top: 0; left: 0; 
-            width: 100%; height: 100%; background: black; z-index: 600;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            z-index: 2000;
         }
-        #game-video { width: 100%; height: 100%; object-fit: contain; }
+
+        #game-video {
+            width: 100%; height: 100%;
+            object-fit: contain;
+        }
+
         #countdown-overlay {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-            z-index: 700; justify-content: center; align-items: center;
-            font-size: 30vh; color: var(--gold); font-weight: bold;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            font-size: 25vh;
+            color: var(--gold);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -78,6 +139,10 @@
         <source src="background-loop.mp4" type="video/mp4">
     </video>
 
+    <div id="fullscreen-btn" onclick="toggleFullScreen()">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+    </div>
+
     <div class="banner-space"></div>
 
     <div class="game-area-bottom">
@@ -85,7 +150,7 @@
             <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
             <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
         </div>
-        <button id="start-btn" onclick="startApp()">SING!</button>
+        <button id="start-btn" onclick="unlockAndStart()">SING!</button>
     </div>
 
     <div id="countdown-overlay">READY?</div>
@@ -99,18 +164,32 @@
 
     <script>
         const songVideos = ["song1.mp4", "song2.mp4", "song3.mp4", "song4.mp4", "song5.mp4"];
-        const goodJobFile = "good-job.mp4";
+        const goodJobVideo = "good-job.mp4";
+        
         const videoPlayer = document.getElementById('game-video');
         const overlay = document.getElementById('video-overlay');
         const startBtn = document.getElementById('start-btn');
 
-        function startApp() {
-            // Fullscreen iPad
-            const elem = document.documentElement;
-            if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        function toggleFullScreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+            const request = docEl.webkitRequestFullscreen || docEl.requestFullscreen;
+            if (!doc.webkitFullscreenElement && !doc.fullscreenElement) {
+                request.call(docEl);
+                // Pre-warm the video player on click
+                videoPlayer.play().then(() => videoPlayer.pause());
+            }
+        }
+
+        function unlockAndStart() {
+            // Fullscreen check for iPad
+            if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
             
-            // "Unlock" the player so it doesn't block songs
-            videoPlayer.play().then(() => { videoPlayer.pause(); });
+            // Critical: "Unlock" video player immediately on tap
+            videoPlayer.play().then(() => {
+                videoPlayer.pause();
+                videoPlayer.muted = false;
+            }).catch(e => console.log("Unlock failed", e));
 
             runSelectionCycle();
         }
@@ -118,8 +197,9 @@
         function runSelectionCycle() {
             startBtn.style.visibility = 'hidden';
             document.getElementById('sfx-shimmer').play();
+            
             let count = 0;
-            let totalSteps = 20 + Math.floor(Math.random() * 10);
+            let totalSteps = 20;
             const boxes = document.querySelectorAll('.box');
 
             const interval = setInterval(() => {
@@ -141,9 +221,8 @@
             countOverlay.style.display = 'flex';
             let timer = 3;
             
-            // Critical Fix: Map 10 boxes to 5 songs using modulo % 5
-            const selectedSong = songVideos[boxIndex % 5];
-            videoPlayer.src = selectedSong;
+            // Map 10 boxes to 5 songs
+            videoPlayer.src = songVideos[boxIndex % 5];
             videoPlayer.load();
 
             const countInterval = setInterval(() => {
@@ -158,21 +237,19 @@
                     countOverlay.style.display = 'none';
                     overlay.style.display = 'block';
                     
-                    // PLAY FULL FILE - No timer will cut this
+                    // Plays FULL song. No timers will cut this.
                     videoPlayer.play();
                 }
             }, 800);
         }
 
-        // Listener: Play next video only when the current one hits the physical end
-        videoPlayer.addEventListener('ended', function() {
-            if (!videoPlayer.src.includes(goodJobFile)) {
-                // Song ended naturally -> Now play Good Job
-                videoPlayer.src = goodJobFile;
+        // Handle full playback and transition
+        videoPlayer.addEventListener('ended', function handleEnd() {
+            if (!videoPlayer.src.includes(goodJobVideo)) {
+                videoPlayer.src = goodJobVideo;
                 videoPlayer.load();
                 videoPlayer.play();
             } else {
-                // Good Job ended -> Back to grid
                 overlay.style.display = 'none';
                 startBtn.style.visibility = 'visible';
                 document.querySelectorAll('.box').forEach(b => b.classList.remove('shimmer'));
