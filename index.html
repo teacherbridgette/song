@@ -49,6 +49,7 @@
             background-image: url('box-design.png'); background-size: cover;
             background-position: center; background-color: rgba(0,0,0,0.4);
             box-shadow: 0 0 3vh rgba(157, 0, 255, 0.4);
+            transition: transform 0.1s ease;
         }
 
         .box.shimmer {
@@ -73,14 +74,13 @@
             position: absolute; width: 110%; height: 110%;
             top: -5%; left: -5%; object-fit: cover;
             filter: blur(30px) brightness(0.5);
-            -webkit-filter: blur(30px) brightness(0.5); /* Safari Fix */
+            -webkit-filter: blur(30px) brightness(0.5);
             z-index: 2001;
         }
 
         #game-video {
             position: relative; width: 100%; height: 100%;
-            object-fit: contain; z-index: 2005; /* Moved way to the front */
-            filter: none !important; -webkit-filter: none !important;
+            object-fit: contain; z-index: 2005;
         }
 
         #countdown-overlay {
@@ -136,25 +136,33 @@
 
         function unlockAndStart() {
             if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+            // Pre-unlock the video elements for iOS
             videoPlayer.play().then(() => { videoPlayer.pause(); videoPlayer.muted = false; });
+            blurPlayer.play().then(() => { blurPlayer.pause(); });
             runSelectionCycle();
         }
 
         function runSelectionCycle() {
             startBtn.style.visibility = 'hidden';
             document.getElementById('sfx-shimmer').play();
+            
             let count = 0;
+            // RANDOMIZATION: Pick a random number of steps (cycles)
+            const totalSteps = 15 + Math.floor(Math.random() * 15); 
             const boxes = document.querySelectorAll('.box');
 
             const interval = setInterval(() => {
                 boxes.forEach(b => b.classList.remove('shimmer'));
                 boxes[count % 5].classList.add('shimmer');
                 count++;
-                if (count > 15) {
+
+                if (count > totalSteps) {
                     clearInterval(interval);
                     document.getElementById('sfx-shimmer').pause();
                     document.getElementById('sfx-shimmer').currentTime = 0;
-                    startCountdown(count % 5);
+                    
+                    // Final highlighted box determines the song
+                    startCountdown((count - 1) % 5);
                 }
             }, 130);
         }
@@ -168,7 +176,6 @@
             videoPlayer.src = songFile;
             blurPlayer.src = songFile;
             
-            // iPad Fix: Clear memory and load fresh
             videoPlayer.load();
             blurPlayer.load();
 
@@ -184,8 +191,9 @@
                     countOverlay.style.display = 'none';
                     overlay.style.display = 'block';
                     
-                    // Force the main player to play first, then the blur
+                    // Start playback and sync
                     videoPlayer.play().then(() => {
+                        blurPlayer.currentTime = videoPlayer.currentTime;
                         blurPlayer.play();
                     });
                 }
